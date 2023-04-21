@@ -1,0 +1,40 @@
+version: '1'
+
+services:
+  api:
+    container_name: j-soro-search-api
+    build: .
+    ports:
+      - "3000:3000" # API port
+      - "9229:9229" # process debug port
+    environment:
+      - NODE_ENV=local
+      - ES_HOST=elasticsearch
+      - PORT=3000
+    volumes:
+      - ./books:/usr/src/app/books
+  
+  frontend: # Nginx Server for Frontend App
+    container_name: j-soro-search-frontend
+    image: nginx
+    volumes: # Serve local "public" dir
+      - ./public:/usr/share/nginx/html
+    ports:
+      - "8080:80" # Forward site to localhost:8080
+
+  elasticsearch:  # Elasticsearch instance
+    container_name: j-soro-search-es
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
+    volumes: # Persist ES data in separate "esdata" volume
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - node.name=j-soro-es01
+      - xpack.security.enabled=false
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+volumes: # Define separate volume for Elasticsearch data
+  esdata:

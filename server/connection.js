@@ -34,14 +34,16 @@ async function resetIndex () {
 }
 
 async function putBookMapping () {
-  const schema = {
-    title: { type: 'keyword'},
-    author: { type: 'keyword'},
-    location: { type: 'integer'},
-    text: { type: 'text'}
+  const mappings = {
+    properties: {
+      title: { type: 'keyword'},
+      author: { type: 'keyword'},
+      location: { type: 'integer'},
+      text: { type: 'text'}  
+    }
   }
 
-  return client.indices.putMapping({ index, type, body: { properties: schema } })
+  return client.indices.putMapping({ index, body: mappings })
 }
 
 module.exports = {

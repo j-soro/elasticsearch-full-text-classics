@@ -14,6 +14,6 @@ module.exports = {
         highlight: { fields: { text: {} } }
     }
 
-    return client.search({ index, body})
+    return client.search({ index, body })
   }
 }
